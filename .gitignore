@@ -1,0 +1,9 @@
+.pc/
+LICENSE.txt
+NOTICE.txt
+README.txt
+build.xml
+dev-tools/
+extra-targets.xml
+lucene/
+solr/

@@ -1,0 +1,11 @@
+--- a/lucene/ivy-versions.properties
++++ b/lucene/ivy-versions.properties
+@@ -78,7 +78,7 @@
+ /mecab/mecab-ipadic = 2.7.0-20070801
+ /mecab/mecab-naist-jdic = 0.6.3b-20111013
+ /net.arnx/jsonic = 1.2.7
+-/net.sf.saxon/Saxon-HE = 9.5.1-4
++/net.sf.saxon/Saxon-HE = 9.5.1-8
+ /net.sourceforge.argparse4j/argparse4j = 0.4.3
+ /net.sourceforge.nekohtml/nekohtml = 1.9.17
+ /org.antlr/antlr-runtime = 3.5
