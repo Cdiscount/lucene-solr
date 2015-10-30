@@ -1,3 +1,9 @@
+lucene-solr (4.10.4-0ubuntu2) precise; urgency=low
+
+  * Fix https://issues.apache.org/jira/browse/SOLR-7730 
+
+ -- Rémi Buisson <remi.buisson@cdiscount.com>  Fri, 30 Oct 2015 09:27:02 +0000
+
 lucene-solr (4.10.4-0ubuntu1) precise; urgency=low
 
   * New upstream release

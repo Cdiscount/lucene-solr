@@ -1,0 +1,50 @@
+Fix https://issues.apache.org/jira/browse/SOLR-7730
+--- a/lucene/core/src/java/org/apache/lucene/index/SlowCompositeReaderWrapper.java
++++ b/lucene/core/src/java/org/apache/lucene/index/SlowCompositeReaderWrapper.java
+@@ -135,16 +135,17 @@
+         return dv;
+       }
+     }
+-    // cached ordinal map
+-    if (getFieldInfos().fieldInfo(field).getDocValuesType() != DocValuesType.SORTED) {
+-      return null;
+-    }
+     int size = in.leaves().size();
+     final SortedDocValues[] values = new SortedDocValues[size];
+     final int[] starts = new int[size+1];
+     for (int i = 0; i < size; i++) {
+       AtomicReaderContext context = in.leaves().get(i);
+-      SortedDocValues v = context.reader().getSortedDocValues(field);
++      final AtomicReader reader = context.reader();
++      final FieldInfo fieldInfo = reader.getFieldInfos().fieldInfo(field);
++      if (fieldInfo != null && fieldInfo.getDocValuesType() != DocValuesType.SORTED) {
++        return null;
++      }
++      SortedDocValues v = reader.getSortedDocValues(field);
+       if (v == null) {
+         v = DocValues.emptySorted();
+       }
+@@ -173,17 +174,18 @@
+         return dv;
+       }
+     }
+-    // cached ordinal map
+-    if (getFieldInfos().fieldInfo(field).getDocValuesType() != DocValuesType.SORTED_SET) {
+-      return null;
+-    }
+     assert map != null;
+     int size = in.leaves().size();
+     final SortedSetDocValues[] values = new SortedSetDocValues[size];
+     final int[] starts = new int[size+1];
+     for (int i = 0; i < size; i++) {
+       AtomicReaderContext context = in.leaves().get(i);
+-      SortedSetDocValues v = context.reader().getSortedSetDocValues(field);
++      final AtomicReader reader = context.reader();
++      final FieldInfo fieldInfo = reader.getFieldInfos().fieldInfo(field);
++      if (fieldInfo != null && fieldInfo.getDocValuesType() != DocValuesType.SORTED_SET) {
++        return null;
++      }
++      SortedSetDocValues v = reader.getSortedSetDocValues(field);
+       if (v == null) {
+         v = DocValues.emptySortedSet();
+       }
