@@ -1,65 +1,56 @@
 #!/usr/bin/make -f
 
-export JAVA_HOME=/usr/lib/jvm/default-java
-
+JAVA_HOME=/usr/lib/jvm/default-java
 DEB_UPSTREAM_VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^+]+).*,\1,p')
-DEB_BUILD_OPTIONS="nocheck"
 
-%:
-	dh $@ --with maven_repo_helper
-
-override_dh_auto_configure:
-	# Link in jars from /usr/share/java rather
-	# than patching the build process
-	for pkg in `cat debian/build-jars`; \
-	do \
-		ln -sf `echo $$pkg | cut -d : -f 1` `echo $$pkg | cut -d : -f 2`; \
-	done
-	dh_auto_configure
-
-override_dh_auto_build:
-	mkdir -p lucene/site/build/site
-	ant -lib /usr/share/java/ivy.jar -buildfile build.xml -Dversion=$(DEB_UPSTREAM_VERSION) get-maven-poms
-	ant -lib /usr/share/java/ivy.jar -buildfile lucene/build.xml -propertyfile debian/ant.properties \
-		-Dversion=$(DEB_UPSTREAM_VERSION) jar-core documentation build-modules
-	ant -lib /usr/share/java/ivy.jar -buildfile solr/contrib/dataimporthandler/build.xml \
-		-propertyfile debian/ant.properties -Dversion=$(DEB_UPSTREAM_VERSION) dist
-	ant -lib /usr/share/java/ivy.jar -buildfile solr/build.xml -propertyfile debian/ant.properties \
-		-Dversion=$(DEB_UPSTREAM_VERSION) dist-war
-
-ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
-override_dh_auto_test:
-	ant -lib /usr/share/java/ivy.jar -buildfile lucene/build.xml -propertyfile debian/ant.properties \
-        -Dversion=$(DEB_UPSTREAM_VERSION) test-core test-modules
-	ant -lib /usr/share/java/ivy.jar -buildfile solr/build.xml -propertyfile debian/ant.properties \
-        -Dversion=$(DEB_UPSTREAM_VERSION) test-core
+ifdef http_proxy
+	HTTP_PROXY=-Dhttp.proxyHost=$(shell echo $$http_proxy | awk -F '/' '{ print $$3 }' | awk -F ':' '{ print $$1 }') -Dhttp.proxyPort=$(shell echo $$http_proxy | awk -F '/' '{ print $$3 }' | awk -F ':' '{ print $$2 }')
+else
+	HTTP_PROXY=
 endif
 
+ifdef https_proxy
+	HTTPS_PROXY=-Dhttps.proxyHost=$(shell echo $$https_proxy | awk -F '/' '{ print $$3 }' | awk -F ':' '{ print $$1 }') -Dhttps.proxyPort=$(shell echo $$https_proxy | awk -F '/' '{ print $$3 }' | awk -F ':' '{ print $$2 }')
+else
+	HTTPS_PROXY=
+endif
+
+EXTRA_ARGS=-Divy.symlink=false
+
+%:
+	dh $@ --with javahelper
+
+override_dh_auto_build:
+	ant compile -lib /usr/share/java/ivy.jar -Dversion=$(DEB_UPSTREAM_VERSION) -buildfile build.xml $(HTTP_PROXY) $(HTTPS_PROXY) $(EXTRA_ARGS)
+	ant jar -lib /usr/share/java/ivy.jar -Dversion=$(DEB_UPSTREAM_VERSION) -buildfile build.xml $(HTTP_PROXY) $(HTTPS_PROXY) $(EXTRA_ARGS)
+
 override_dh_auto_clean:
-	ant -lib /usr/share/java/ivy.jar clean-jars
-	# breaks if patches not applied
-	ant -lib /usr/share/java/ivy.jar -buildfile lucene/build.xml clean-javacc || true
-	find . -name "*.jar" -type l -delete || true
-	find . -name "pom.xml" -type f -delete || true
-	rm -f debian/liblucene3-java.poms
-	rm -rf lucene/site/build/site
+	ant -lib /usr/share/java/ivy.jar -buildfile build.xml clean
+	find $(CURDIR) -name '*.jar' -delete || true
+	rm -rf $(CURDIR)/debian/etc/
+	rm -rf $(CURDIR)/debian/dist/
 	dh_auto_clean
 
-override_dh_fixperms:
-	chmod 644 debian/solr-common/usr/share/solr/web/WEB-INF/weblogic.xml \
-		debian/solr-common/etc/solr/conf/solrconfig.xml \
-		debian/solr-common/usr/share/solr/web/favicon.ico
-	dh_fixperms
-
 override_dh_auto_install:
-	sed -e "s|__VERSION__|$(DEB_UPSTREAM_VERSION)|g" \
-		< debian/liblucene3-java.poms.in > debian/liblucene3-java.poms 
+	mkdir -p $(CURDIR)/debian/dist/solr-webapp/webapp/WEB-INF/lib/ $(CURDIR)/debian/etc/default/ $(CURDIR)/debian/etc/solr5/ $(CURDIR)/debian/etc/init.d/
+	cp $(CURDIR)/solr/server/start.jar $(CURDIR)/debian/dist/
+	cp -r $(CURDIR)/solr/server/contexts $(CURDIR)/debian/dist/
+	cp -r $(CURDIR)/solr/server/etc $(CURDIR)/debian/dist/
+	cp -r $(CURDIR)/solr/server/lib $(CURDIR)/debian/dist/
+	cp -r $(CURDIR)/solr/server/modules $(CURDIR)/debian/dist/
+	cp -r $(CURDIR)/solr/server/solr $(CURDIR)/debian/dist/
+	cp -r $(CURDIR)/solr/server/lib $(CURDIR)/debian/dist/
+	cp -r $(CURDIR)/solr/server/resources $(CURDIR)/debian/dist/
+	cp -r $(CURDIR)/solr/server/scripts $(CURDIR)/debian/dist/
+	rm -rf $(CURDIR)/debian/dist/etc/jetty*.xml
+	cp -r $(CURDIR)/solr/webapp/web/* $(CURDIR)/debian/dist/solr-webapp/webapp/
+	find $(CURDIR)/solr/build/ -name '*.jar' -exec cp {} $(CURDIR)/debian/dist/solr-webapp/webapp/WEB-INF/lib/ \;
+	find $(CURDIR)/lucene/build/ -name '*.jar' -exec cp {} $(CURDIR)/debian/dist/solr-webapp/webapp/WEB-INF/lib/ \;
+	find $(CURDIR)/solr/solrj/lib/ -name '*.jar' -exec cp {} $(CURDIR)/debian/dist/solr-webapp/webapp/WEB-INF/lib/ \;
+	find $(CURDIR)/solr/core/lib/ -name '*.jar' -exec cp {} $(CURDIR)/debian/dist/solr-webapp/webapp/WEB-INF/lib/ \; 
+	chmod +x $(CURDIR)/solr/bin/solr
+	cp $(CURDIR)/solr/bin/solr.in.sh $(CURDIR)/debian/etc/default/solr5
+	cp $(CURDIR)/solr/bin/init.d/solr $(CURDIR)/debian/etc/init.d/solr5
+	cp $(CURDIR)/solr/server/scripts/cloud-scripts/log4j.properties $(CURDIR)/debian/etc/solr5/cloud-scripts-log4j.properties
 	dh_auto_install
 
-override_dh_installchangelogs:
-	dh_installchangelogs -pliblucene3-java lucene/CHANGES.txt
-	dh_installchangelogs -plibsolr-java solr/CHANGES.txt
-	dh_installchangelogs
-
-get-orig-source:
-	uscan --force-download --rename

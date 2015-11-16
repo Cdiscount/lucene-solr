@@ -1,7 +1,0 @@
-/etc/solr/web.xml                           /usr/share/solr/web/WEB-INF/web.xml
-/etc/solr/conf                              /usr/share/solr/conf
-/etc/solr/solr.xml                          /usr/share/solr/solr.xml
-/var/lib/solr/data                          /usr/share/solr/data
-/var/log/solr                               /usr/share/solr/logs
-/usr/share/solr/bin                         /usr/share/solr/scripts
-/usr/share/javascript/jquery/jquery.min.js  /usr/share/solr/web/admin/jquery-1.4.3.min.js

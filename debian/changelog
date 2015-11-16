@@ -1,3 +1,9 @@
+solr5 (5.3.1-0ubuntu1) trusty; urgency=low
+
+  * New upstream release
+
+ -- Rémi Buisson <remi.buisson@cdiscount.com>  Fri, 12 Nov 2015 09:27:02 +0000
+
 lucene-solr (4.10.4-0ubuntu2) precise; urgency=low
 
   * Fix https://issues.apache.org/jira/browse/SOLR-7730 
@@ -91,3 +97,4 @@ lucene-solr (3.6.0+dfsg-1) unstable; urgency=low
   * Initial release. (Closes: #594027)
 
  -- James Page <james.page@ubuntu.com>  Tue, 29 May 2012 17:32:24 +0100
+ 

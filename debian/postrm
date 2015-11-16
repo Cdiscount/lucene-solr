@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    remove|purge)
+        if [ "x"$2 != "x" ]; then
+            # we are doing an upgrade
+            exit 0
+        fi
+        cat /etc/shadow | awk -F ':' '{ print $1 }' | grep -E '^solr$' && userdel solr
+        update-rc.d -f solr5 remove
+        ;;
+
+    upgrade|deconfigure)
+    ;;
+
+    failed-upgrade)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

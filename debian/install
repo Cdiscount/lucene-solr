@@ -1,0 +1,9 @@
+debian/etc/default/solr5                            /etc/default
+debian/etc/solr5/cloud-scripts-log4j.properties     /etc/solr5
+debian/etc/init.d/solr5                             /etc/init.d
+solr/bin/solr                                       /usr/share/solr5/bin
+solr/scripts/*                                      /usr/share/solr5/bin
+solr/server/etc/jetty*.xml                          /etc/solr5
+solr/server/solr/*.xml                              /etc/solr5
+solr/server/resources/log4j.properties              /etc/solr5
+debian/dist/*                                       /usr/share/solr5

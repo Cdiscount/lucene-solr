@@ -1,0 +1,5 @@
+/etc/solr5
+/var/log/solr5
+/var/lib/solr5/data
+/var/log/solr5
+/var/run/solr5

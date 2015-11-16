@@ -1,0 +1,11 @@
+/etc/solr5/cloud-scripts-log4j.properties  /usr/share/solr5/scripts/cloud-scripts/log4j.properties
+/etc/solr5/solr.xml                        /usr/share/solr5/solr/solr.xml
+/etc/solr5/jetty-https-ssl.xml             /usr/share/solr5/etc/jetty-https-ssl.xml
+/etc/solr5/jetty-https.xml                 /usr/share/solr5/etc/jetty-https.xml
+/etc/solr5/jetty-http.xml                  /usr/share/solr5/etc/jetty-http.xml
+/etc/solr5/jetty-ssl.xml                   /usr/share/solr5/etc/jetty-ssl.xml
+/etc/solr5/jetty.xml                       /usr/share/solr5/etc/jetty.xml
+/etc/solr5/log4j.properties                /usr/share/solr5/resources/log4j.properties
+/var/lib/solr5/data                        /usr/share/solr5/data
+/var/log/solr5                             /usr/share/solr5/logs
+
