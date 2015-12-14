@@ -48,7 +48,7 @@ override_dh_auto_install:
 	find $(CURDIR)/lucene/build/ -name '*.jar' -exec cp {} $(CURDIR)/debian/dist/solr-webapp/webapp/WEB-INF/lib/ \;
 	find $(CURDIR)/solr/solrj/lib/ -name '*.jar' -exec cp {} $(CURDIR)/debian/dist/solr-webapp/webapp/WEB-INF/lib/ \;
 	find $(CURDIR)/solr/core/lib/ -name '*.jar' -exec cp {} $(CURDIR)/debian/dist/solr-webapp/webapp/WEB-INF/lib/ \; 
-	chmod +x $(CURDIR)/solr/bin/solr
+	chmod +x $(CURDIR)/solr/bin/solr $(CURDIR)/solr/bin/oom_solr.sh
 	cp $(CURDIR)/solr/bin/solr.in.sh $(CURDIR)/debian/etc/default/solr5
 	cp $(CURDIR)/solr/bin/init.d/solr $(CURDIR)/debian/etc/init.d/solr5
 	cp $(CURDIR)/solr/server/scripts/cloud-scripts/log4j.properties $(CURDIR)/debian/etc/solr5/cloud-scripts-log4j.properties
