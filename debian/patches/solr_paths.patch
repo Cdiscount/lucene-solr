@@ -4,17 +4,17 @@
  #   update-rc.d solr enable
  
  # Where you extracted the Solr distribution bundle
--SOLR_INSTALL_DIR=/opt/solr
-+SOLR_INSTALL_DIR=/usr/share/solr5
+-SOLR_INSTALL_DIR="/opt/solr"
++SOLR_INSTALL_DIR="/usr/share/solr5"
  
  if [ ! -d "$SOLR_INSTALL_DIR" ]; then
    echo "$SOLR_INSTALL_DIR not found! Please check the SOLR_INSTALL_DIR setting in your $0 script."
-@@ -44,13 +44,20 @@
+@@ -44,13 +44,19 @@
  # variables used by the bin/solr script. It's highly recommended to define this script so
  # that you can keep the Solr binary files separated from live files (pid, logs, index data, etc)
  # see bin/solr.in.sh for an example
--SOLR_ENV=/var/solr/solr.in.sh
-+SOLR_ENV=/etc/default/solr5
+-SOLR_ENV="/etc/default/solr.in.sh"
++SOLR_ENV="/etc/default/solr5"
  
  if [ ! -f "$SOLR_ENV" ]; then
    echo "$SOLR_ENV not found! Please check the SOLR_ENV setting in your $0 script."
@@ -23,14 +23,13 @@
  
 +. /etc/default/solr5
 +if [ "$NO_START" = "1" ]; then
-+  echo "SolR is not enabled by default! Please set NO_START=0 in /etc/default/solr5 to enable it."
-+  exit 1
++    echo "SolR is not enabled by default! Please set NO_START=0 in /etc/default/solr5 to enable it."
++    exit 1
 +fi
-+
 +
  # Specify the user to run Solr as; if not set, then Solr will run as root.
  # Running Solr as root is not recommended for production environments
- RUNAS=solr
+ RUNAS="solr"
 --- a/solr/bin/solr.in.sh
 +++ b/solr/bin/solr.in.sh
 @@ -13,6 +13,9 @@
@@ -43,22 +42,23 @@
  # By default the script will use JAVA_HOME to determine which java
  # to use, but you can set a specific path for Solr to use without
  # affecting other Java applications on your server/workstation.
-@@ -86,7 +89,7 @@
- # Solr provides a default Log4J configuration properties file in server/resources
- # however, you may want to customize the log settings and file appender location
- # so you can point the script to use a different log4j.properties file
--#LOG4J_PROPS=/var/solr/log4j.properties
-+#LOG4J_PROPS=/etc/solr5/log4j.properties
- 
- # Location where Solr should write logs to; should agree with the file appender
- # settings in server/resources/log4j.properties
-@@ -115,3 +118,9 @@
+@@ -118,3 +121,8 @@
  #SOLR_AUTHENTICATION_CLIENT_CONFIGURER=
  #SOLR_AUTHENTICATION_OPTS=
  
-+
 +# Debian specific settings
 +SOLR_SERVER_DIR=/usr/share/solr5
 +DEFAULT_SERVER_DIR=/usr/share/solr5
 +SOLR_HOME=/usr/share/solr5
 +SOLR_PID_DIR=/var/run/solr5
+--- a/solr/server/solr/solr.xml
++++ b/solr/server/solr/solr.xml
+@@ -28,6 +28,8 @@
+ 
+ <solr>
+ 
++  <str name="coreRootDirectory">/var/lib/solr5/data</str>
++
+   <solrcloud>
+ 
+     <str name="host">${host:}</str>

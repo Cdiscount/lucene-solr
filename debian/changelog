@@ -1,3 +1,9 @@
+solr5 (5.4.0-0ubuntu1) trusty; urgency=low
+
+  * New upstream release
+
+ -- Rémi Buisson <remi.buisson@cdiscount.com>  Tue, 05 Jan 2016 14:03:15 +0000
+
 solr5 (5.3.1-0ubuntu2) trusty; urgency=low
 
   * Forgot oom_solr.sh
