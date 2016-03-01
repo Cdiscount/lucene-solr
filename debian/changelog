@@ -1,3 +1,9 @@
+solr5 (5.5.0) stable; urgency=low
+
+  * New upstream release
+
+ -- Rémi Buisson <remi.buisson@cdiscount.com>  Tue, 01 Mar 2016 11:44:46 +0100
+
 solr5 (5.4.0-0ubuntu1) trusty; urgency=low
 
   * New upstream release
