@@ -11,7 +11,7 @@ case "$1" in
             # we are doing an upgrade
             exit 0
         fi
-        cat /etc/shadow | awk -F ':' '{ print $1 }' | grep -E '^solr$' || useradd -d /var/lib/solr/ -r solr
+        cat /etc/shadow | awk -F ':' '{ print $1 }' | grep -E '^solr$' > /dev/null || useradd -d /var/lib/solr/ -r solr
         chown -R solr: /var/log/solr5/ /var/run/solr5
         update-rc.d solr5 defaults
     ;;

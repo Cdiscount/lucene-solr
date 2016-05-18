@@ -8,7 +8,7 @@ case "$1" in
             # we are doing an upgrade
             exit 0
         fi
-        cat /etc/shadow | awk -F ':' '{ print $1 }' | grep -E '^solr$' && userdel solr
+        cat /etc/shadow | awk -F ':' '{ print $1 }' | grep -E '^solr$' > /dev/null && userdel solr
         update-rc.d -f solr5 remove
         ;;
 

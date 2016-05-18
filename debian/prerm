@@ -6,7 +6,8 @@ case "$1" in
     remove|purge)
         invoke-rc.d solr5 stop
         ;;
-
+    upgrade)
+        ;;
     *)
         echo "prerm called with unknown argument \`$1'" >&2
         exit 1
